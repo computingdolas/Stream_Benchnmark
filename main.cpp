@@ -11,21 +11,20 @@
 #include <omp.h>
 #include <chrono>
 #include <omp.h>
-#include <string>
 
 
 int main(int argc, const char * argv[]) {
     
 	// Taking the input parameter 
     int K_times = std::atoi(argv[1]) ; 
-    double input_bytes = std::stod(argv[2]) ; 
+    uint64_t input_bytes = std::atol(argv[2]) ; 
     int N_bytes = 24 ; 
 
     double global_time = 0.0	 ; 
 
-    uint64_t N = (input_bytes * 1e+06) / N_bytes ; 
-    std::cout << "The length of array is :=" << N << " doubles" << std::endl ; 
-    std::cout <<"The input memory in megabytes are :="<< input_bytes <<" MegaBytes"<< std::endl ; 
+    uint64_t N = input_bytes / N_bytes ; 
+
+    std::cout <<"The input memory in megabytes are :="<< input_bytes / 1000000 <<" MegaBytes"<< std::endl ; 
     std::cout <<"The number of iterations performed will be :=" << K_times<< std::endl ; 
 
     std::cout << "NUMA aware memory allocation taking place"<<std::endl ; 
@@ -35,7 +34,7 @@ int main(int argc, const char * argv[]) {
     double * c = new double [N] ;
 
     // NUMA initialization ... / first touch principle 
-    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(2)
+    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(1)
     for (uint64_t i = 0; i < N; ++i)
     {
     	a[i] = 1.0 ; 
@@ -45,7 +44,7 @@ int main(int argc, const char * argv[]) {
     
     // ADD Benchmark
     for (int i = 0 ; i < K_times ; ++i){
-    	#pragma omp parallel shared(a,b,c,N) num_threads(2)
+    	#pragma omp parallel shared(a,b,c,N) num_threads(1)
     	{
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
@@ -58,6 +57,6 @@ int main(int argc, const char * argv[]) {
     	}
     }
 
-	std::cout << "Time spend for ADD operation is :=" << global_time / (double) K_times  <<" seconds "<< std::endl ;     
+	std::cout << "Time spend for ADD operation is :=" << global_time / (double) K_times  << std::endl ;     
  
 }
