@@ -31,19 +31,13 @@ int main(int argc, const char * argv[]) {
     std::cout <<"The number of iterations performed will be :=" << K_times<< std::endl ; 
     std::cout << "NUMA aware memory allocation taking place"<<std::endl ; 
     
-
     // Memory allocation     
     double * a = new double [N] ;
     double * b = new double [N] ;
     double * c = new double [N] ;
 
-    // std::vector<double> a(N) ; 
-    // std::vector<double> b(N) ; 
-    // std::vector<double> c(N) ; 
-    // std::vector<uint64_t> r(N) ; 
-
     // NUMA initialization ... / first touch principle 
-    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(1)
+    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(2)
     for (uint64_t i = 0; i < N; ++i)
     {
     	a[i] = 1.0 ; 
@@ -53,7 +47,7 @@ int main(int argc, const char * argv[]) {
     
     // ADD Benchmark ... unit stride access 
     for (int i = 0 ; i < K_times ; ++i){
-    	#pragma omp parallel shared(a,b,c,N) num_threads(1)
+    	#pragma omp parallel shared(a,b,c,N) num_threads(2)
     	{
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
@@ -70,22 +64,4 @@ int main(int argc, const char * argv[]) {
     }
 
     std::cout << "Time spend for unit stride ADD operation is :=" << global_time / (double) K_times  <<" seconds "<< std::endl ;     
-
-
-
-    // // Random Access Benchmark 
-    // for (int i = 0 ; i < K_times ; ++i){
-    //     #pragma omp parallel shared(a,b,c,N) num_threads(8)
-    //     {
-    //         double wtime = omp_get_wtime() ; 
-    //         #pragma omp for schedule(static) 
-    //         for (uint64_t k =0 ; k < N ; ++k){
-    //             a[k] = b[k] + c[k] ; 
-    //         }
-    //         wtime = omp_get_wtime() - wtime ; 
-    //         #pragma omp master 
-    //             global_time += wtime ; 
-    //     }
-    // }
-
 }
