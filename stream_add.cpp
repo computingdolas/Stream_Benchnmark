@@ -37,7 +37,7 @@ int main(int argc, const char * argv[]) {
     double * c = new double [N] ;
 
     // NUMA initialization ... / first touch principle 
-    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(2)
+    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(1)
     for (uint64_t i = 0; i < N; ++i)
     {
     	a[i] = 1.0 ; 
@@ -47,15 +47,15 @@ int main(int argc, const char * argv[]) {
     
     // ADD Benchmark ... unit stride access 
     for (int i = 0 ; i < K_times ; ++i){
-    	#pragma omp parallel shared(a,b,c,N) num_threads(2)
+    	#pragma omp parallel shared(a,b,c,N) num_threads(1)
     	{
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
     		for (uint64_t k =0 ; k < N ; ++k){
                 
-                for (int add = 0 ; add < 32 ; ++add){
-                    a[k] = b[k] + c[k] + add ; 
-                }  
+                //for (int add = 0 ; add < 32 ; ++add){
+                    a[k] = b[k] + c[k]  ; 
+                //}  
     		}
     		wtime = omp_get_wtime() - wtime ; 
     		#pragma omp master 
