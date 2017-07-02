@@ -1,5 +1,5 @@
 # Stream_Benchnmark for NUMA Machine @ intel Processor - 3.2Ghz
-This stream specifically desisgned for NUMA machine. This stream benchmark does not measure memory bandwidth, but can be freely adapted to it. It supports NUMA memory allocation. It currently Supports 
+This stream specifically desisgned for NUMA machine. This stream benchmark does not measure memory bandwidth, but can be freely adapted to it. It supports NUMA memory allocation. It currently supports four types of Analysis
 
 1. Memory Bandwidth Limited - ADD Operations
 2. Compute Bound - ADD Operations
