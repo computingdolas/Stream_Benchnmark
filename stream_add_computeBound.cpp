@@ -15,6 +15,7 @@
 #include <omp.h>
 #include <string>
 #include <vector>
+#include <math.h>
 
 
 int main(int argc, const char * argv[]) {
@@ -46,9 +47,9 @@ int main(int argc, const char * argv[]) {
     #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(1)
     for (uint64_t i = 0; i < N; ++i)
     {
-    	a[i] = 1.0 ; 
-    	b[i] = 1.0 ; 
-    	c[i] = 1.0 ; 
+    	a[i] = 0.0 ; 
+    	b[i] = i; 
+    	c[i] = i ; 
     }
     
     // ADD Benchmark ... unit stride access 
@@ -58,10 +59,8 @@ int main(int argc, const char * argv[]) {
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
     		for (uint64_t k =0 ; k < N ; ++k){
-                
-                for (int add = 0 ; add < 32 ; ++add){
-                    a[k] = b[k] + c[k] + add ; 
-                }  
+                a[k] = exp(-1.0 * (sin(b[i]) + sin(c[i]))) ; 
+    			//a[k] = b[k] + c[k] ; 
     		}
     		wtime = omp_get_wtime() - wtime ; 
     		#pragma omp master 
@@ -70,22 +69,5 @@ int main(int argc, const char * argv[]) {
     }
 
     std::cout << "Time spend for unit stride ADD operation is :=" << global_time / (double) K_times  <<" seconds "<< std::endl ;     
-
-
-
-    // // Random Access Benchmark 
-    // for (int i = 0 ; i < K_times ; ++i){
-    //     #pragma omp parallel shared(a,b,c,N) num_threads(8)
-    //     {
-    //         double wtime = omp_get_wtime() ; 
-    //         #pragma omp for schedule(static) 
-    //         for (uint64_t k =0 ; k < N ; ++k){
-    //             a[k] = b[k] + c[k] ; 
-    //         }
-    //         wtime = omp_get_wtime() - wtime ; 
-    //         #pragma omp master 
-    //             global_time += wtime ; 
-    //     }
-    // }
 
 }
