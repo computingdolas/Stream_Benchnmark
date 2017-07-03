@@ -44,23 +44,23 @@ int main(int argc, const char * argv[]) {
     // std::vector<uint64_t> r(N) ; 
 
     // NUMA initialization ... / first touch principle 
-    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(1)
+    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(16)
     for (uint64_t i = 0; i < N; ++i)
     {
     	a[i] = 0.0 ; 
-    	b[i] = i; 
+    	b[i] = i ; 
     	c[i] = i ; 
     }
     
     // ADD Benchmark ... unit stride access 
     for (int i = 0 ; i < K_times ; ++i){
-    	#pragma omp parallel shared(a,b,c,N) num_threads(1)
+    	#pragma omp parallel shared(a,b,c,N) num_threads(16)
     	{
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
-    		for (uint64_t k =0 ; k < N ; ++k){
-                a[k] = exp(-1.0 * (sin(b[i]) + sin(c[i]))) ; 
-    			//a[k] = b[k] + c[k] ; 
+    		for (uint64_t k = 0 ; k < N ; ++k){
+                	//a[k] = exp(-1.0 * (sin(b[k]) + cos(c[k]))) ; 
+    				a[k] = b[k] + c[k] ; 
     		}
     		wtime = omp_get_wtime() - wtime ; 
     		#pragma omp master 
