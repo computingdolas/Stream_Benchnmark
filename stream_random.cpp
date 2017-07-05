@@ -38,16 +38,16 @@ int main(int argc, const char * argv[]) {
     for (uint64_t i = 0 ; i < N ; ++i){
 		r[i] = i ; 
     }
-    std::random_shuffle(r.begin() , r.end()) ; 
+    //std::random_shuffle(r.begin() , r.end()) ; 
 
-    // Memory allocation     
+    // Memory allocation ...... NUMA Aware    
     double * a = new double [N] ;
     double * b = new double [N] ;
     double * c = new double [N] ;
     uint64_t *random = new uint64_t[N] ; 
 
     // NUMA initialization ... / first touch principle 
-    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(2)
+    #pragma omp parallel for schedule(static) shared(a,b,c,N) num_threads(8)
     for (uint64_t i = 0; i < N; ++i)
     {
     	a[i] = 1.0 ; 
@@ -62,7 +62,7 @@ int main(int argc, const char * argv[]) {
 
     // ADD Benchmark ... Unit Stride Random Access 
     for (int i = 0 ; i < K_times ; ++i){
-    	#pragma omp parallel shared(a,b,c,random,N) num_threads(2)
+    	#pragma omp parallel shared(a,b,c,random,N) num_threads(8)
     	{
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 

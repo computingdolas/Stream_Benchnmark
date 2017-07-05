@@ -59,8 +59,7 @@ int main(int argc, const char * argv[]) {
     		double wtime = omp_get_wtime() ; 
     		#pragma omp for schedule(static) 
     		for (uint64_t k = 0 ; k < N ; ++k){
-                	//a[k] = exp(-1.0 * (sin(b[k]) + cos(c[k]))) ; 
-    				a[k] = b[k] + c[k] ; 
+    				a[k] = exp( -1.0 * (sin(b[k]) + cos(c[k]))) ; 
     		}
     		wtime = omp_get_wtime() - wtime ; 
     		#pragma omp master 
