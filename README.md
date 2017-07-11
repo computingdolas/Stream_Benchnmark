@@ -13,5 +13,5 @@ g++ -std=c++11 -fopenmp -O3 filename -o name_executable
 numactl --physcpubind=0,1,2,3 --localalloc ./name_of_executable  number_of_iterations  memory_Mbytes
 
 # Energy Consumption 
-Stream benchmark can also be used to measure energy consumption of processing cores using perf tool by using following command only on linux system \\
+Stream benchmark can also be used to measure energy consumption of processing cores using perf tool by using following command only on linux system__
 sudo perf stat -a -e "power/energy-cores/" ./<name of executable>
