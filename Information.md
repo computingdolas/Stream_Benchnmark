@@ -14,4 +14,4 @@ numactl --physcpubind=0,1,2,3 --localalloc ./name_of_executable  number_of_itera
 
 # Energy Consumption 
 Stream benchmark can also be used to measure energy consumption of processing cores using perf tool by using following command only on linux system <br />
-sudo perf stat -a -e "power/energy-cores/" ./<name of executable>
+sudo perf stat -a -e "power/energy-cores/" ./name of executable
